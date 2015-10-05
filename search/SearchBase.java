@@ -23,7 +23,7 @@ public class SearchBase {
 
 
 		CarryBoolean p = new CarryBoolean();
-		int NEXT_DEPTH = bestFirstSearch(p , depth_limit, new EightPuzzle(start, goal,size));
+		int NEXT_DEPTH = bestFirstSearch(p, depth_limit, new EightPuzzle(start, goal, size));
 
 		System.out.println("The goal was found: "+p.getValue());
 		System.out.println("Suggested next depth is "+NEXT_DEPTH);
@@ -44,7 +44,22 @@ public class SearchBase {
 
 		System.out.println("Starting search with limit "+ limit);
 
-		open.add(new State(ssp.getStart()));
+		public int heuristic = 0;
+		public int slashes = 0;
+		public String start = ssp.getStart();
+		public String goal = ssp.getGoal();
+		for (char c : start) {
+			if (c = "/") {
+				slashes++;
+			}
+		}
+		public char[][] manhattanFinderStart = new char[slashes+1][slashes+1];
+		public char[][] manhattanFinderGoal = new char[slashes+1][slashes+1];
+
+		manhattanFinderStart = cleanArray(start, manhattanFinderStart);
+		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal);
+
+		open.add(new State(ssp.getStart(), heuristic));
 
 		int count = 0;
 
@@ -91,6 +106,28 @@ public class SearchBase {
 	public int bestFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
 
 		return search(done,limit,ssp,new PQasList());
+	}
+
+	public char[][] cleanArray(String status, char[][] target) {
+
+		int j = 0; // first index of 2D array
+		int k = 0; // second index of 2D array
+		String cleanStatus = "";
+
+		String[] tempStatus = status.split("/");
+		for (i=0; i<tempStatus.length; i++) {
+			cleanStatus += tempStatus[i];
+		}
+
+		int count = 0;
+		for (j; j < (slashes+1; j++){
+			for (k; k < (slashes+1); k++) {
+				target[j][k] = cleanStatus.charAt(count);
+				count++;
+			}
+		}
+
+		return target;
 	}
 
 
