@@ -1,19 +1,19 @@
 import java.util.Vector;
 
 
-public class VectorAsList implements SearchList {
+public class Queue implements SearchList {
 
 	Vector<State> theList;
 
 	public State remove() {
-		return theList.remove(theList.size()-1);
+		return theList.remove(0);
 	}
 
 	public void add(State o) {
 		theList.add(o);
 	}
 
-	public VectorAsList() {
+	public Queue() {
 		theList = new Vector<State>();
 	}
 

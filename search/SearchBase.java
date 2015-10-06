@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.Vector;
 
 public class SearchBase {
@@ -6,37 +5,41 @@ public class SearchBase {
 	private static int PRINT_HOW_OFTEN = 1;
 	public static boolean debug = false;
 
-
 	public static void main(String[] args)  {
 
-		int depth_limit = Integer.parseInt(args[0]);
-		System.out.println("Depth Limit "+depth_limit);
-		new SearchBase().process(depth_limit);
+		String search_type = args[0];
+		System.out.println("Search Type: " + search_type);
+
+		int depth_limit = Integer.parseInt(args[1]);
+		System.out.println("Depth Limit: "+depth_limit);
+
+		PRINT_HOW_OFTEN = Integer.parseInt(args[2]);
+		System.out.println("Print output every " + PRINT_HOW_OFTEN + " lines");
+
+		new SearchBase().process(search_type, depth_limit);
 
 	}
 
-	private void process(int depth_limit) {
+	private void process(String search_type, int depth_limit) {
 
-		String start = "216/4x8/753";
-		String goal = "123/8x4/765";
+		String start = "123/456/78x";
+		String goal = "123/456/x78";
 		int size = 3;
-
-
 		CarryBoolean p = new CarryBoolean();
-		int NEXT_DEPTH = bestFirstSearch(p, depth_limit, new EightPuzzle(start, goal, size));
+
+		switch(search_type){
+			case "BFS": breadthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
+						break;
+			case "DFS": depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
+						break;
+			case "DFID": dFID(p , depth_limit, new EightPuzzle(start, goal, size));
+						 break;
+			case "A": break;
+			case "IDA": break;
+			default: break;
+		}
 
 		System.out.println("The goal was found: "+p.getValue());
-		System.out.println("Suggested next depth is "+NEXT_DEPTH);
-
-		System.out.println("Continue?");
-		new Scanner(System.in).next();
-
-		p = new CarryBoolean();
-		NEXT_DEPTH = vectorSearch(p , depth_limit, new EightPuzzle(start, goal,size));
-
-		System.out.println("The goal was found: "+p.getValue());
-		System.out.println("Suggested next depth is "+NEXT_DEPTH);
-
 
 	}
 
@@ -90,7 +93,7 @@ public class SearchBase {
 				break;
 			}
 
-			if (current.getDepth() <= limit) {
+			if (current.getDepth() < limit) {
 				Vector<String> kids = ssp.getKids(current.getRep());
 
 				for (String v : kids) {
@@ -102,16 +105,23 @@ public class SearchBase {
 		return limit+1;
 	}
 
+	public int breadthFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
 
-	public int vectorSearch(CarryBoolean done, int limit, StateSpace ssp) {
-
-		return search(done,limit,ssp,new VectorasList());
+		return search(done, Integer.MAX_VALUE, ssp, new Queue());
 	}
 
+	public int depthFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
 
-	public int bestFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
+		return search(done,limit,ssp,new VectorAsList());
+	}
 
-		return search(done,limit,ssp,new PQasList());
+	public void dFID(CarryBoolean done, int limit, StateSpace ssp){
+
+		for(int i = 0; i <= limit; i++){
+			if(!done.getValue()){
+				depthFirstSearch(done, i, ssp);
+			}
+		}
 	}
 
 	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
@@ -131,7 +141,11 @@ public class SearchBase {
 			}
 		}
 
-		return target;
+	}
+
+
+	public int bestFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
+		return search(done,limit,ssp,new PQasList());
 	}
 
 	public int calcHeuristic(char[][] start, char[][] goal) {
