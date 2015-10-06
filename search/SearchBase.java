@@ -7,7 +7,7 @@ public class SearchBase {
 	public static boolean debug = false;
 
 
-	public static void main(String[] args)  {
+	public static void main(String[] args)  {	
 
 		int depth_limit = Integer.parseInt(args[0]);
 		System.out.println("Depth Limit "+depth_limit);
@@ -17,12 +17,12 @@ public class SearchBase {
 
 	private void process(int depth_limit) {
 
-		String start = "216/4x8/753";
-		String goal = "123/8x4/765";
+		String start = "123/456/78x";
+		String goal = "123/456/x78";
 		int size = 3;
 
-
 		CarryBoolean p = new CarryBoolean();
+		/*
 		int NEXT_DEPTH = bestFirstSearch(p , depth_limit, new EightPuzzle(start, goal,size));
 
 		System.out.println("The goal was found: "+p.getValue());
@@ -32,10 +32,13 @@ public class SearchBase {
 		new Scanner(System.in).next();
 
 		p = new CarryBoolean();
-		NEXT_DEPTH = vectorSearch(p , depth_limit, new EightPuzzle(start, goal,size));
+		*/
+		
+		//depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal,size));
+		dFID(p , depth_limit, new EightPuzzle(start, goal,size));
 
 		System.out.println("The goal was found: "+p.getValue());
-		System.out.println("Suggested next depth is "+NEXT_DEPTH);
+		//System.out.println("Suggested next depth is "+NEXT_DEPTH);
 
 
 	}
@@ -69,11 +72,10 @@ public class SearchBase {
 				break;
 			}
 
-			if (current.getDepth() <= limit) {
+			if (current.getDepth() < limit) {
 				Vector<String> kids = ssp.getKids(current.getRep());
 
 				for (String v : kids) {
-					if (!current.getPath().contains(v))
 						open.add(new State(current,v));
 				}
 			}
@@ -82,9 +84,19 @@ public class SearchBase {
 	}
 
 
-	public int vectorSearch(CarryBoolean done, int limit, StateSpace ssp) {
+	public int depthFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
 
-		return search(done,limit,ssp,new VectorasList());
+		return search(done,limit,ssp,new VectorAsList());
+	}
+	
+	public void dFID(CarryBoolean done, int limit, StateSpace ssp){
+		
+		for(int i = 0; i <= limit; i++){
+			if(!done.getValue()){
+				depthFirstSearch(done, i, ssp);
+			}
+		}
+	
 	}
 
 
