@@ -112,7 +112,7 @@ public class SearchBase {
 
 	public int depthFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
 
-		return search(done,limit,ssp,new VectorAsList());
+		return search(done,limit,ssp,new VectorasList());
 	}
 
 	public void dFID(CarryBoolean done, int limit, StateSpace ssp){
@@ -140,7 +140,8 @@ public class SearchBase {
 				count++;
 			}
 		}
-
+		
+		return target;
 	}
 
 
