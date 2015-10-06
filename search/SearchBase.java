@@ -9,19 +9,40 @@ public class SearchBase {
 
 	public static void main(String[] args)  {	
 
-		int depth_limit = Integer.parseInt(args[0]);
-		System.out.println("Depth Limit "+depth_limit);
-		new SearchBase().process(depth_limit);
+		String search_type = args[0];
+		System.out.println("Search Type: " + search_type);
+		
+		int depth_limit = Integer.parseInt(args[1]);
+		System.out.println("Depth Limit: "+depth_limit);
+		
+		PRINT_HOW_OFTEN = Integer.parseInt(args[2]);
+		System.out.println("Print output every " + PRINT_HOW_OFTEN + " lines");
+		
+		new SearchBase().process(search_type, depth_limit);
 
 	}
 
-	private void process(int depth_limit) {
+	private void process(String search_type, int depth_limit) {
 
 		String start = "123/456/78x";
 		String goal = "123/456/x78";
 		int size = 3;
-
 		CarryBoolean p = new CarryBoolean();
+		
+		switch(search_type){
+			case "BFS": break;
+			case "DFS": depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
+						break;
+			case "DFID": dFID(p , depth_limit, new EightPuzzle(start, goal, size));
+						 break;
+			case "A": break;
+			case "IDA": break;
+			default: break;
+		}
+		
+		System.out.println("The goal was found: "+p.getValue());
+
+		
 		/*
 		int NEXT_DEPTH = bestFirstSearch(p , depth_limit, new EightPuzzle(start, goal,size));
 
@@ -33,13 +54,6 @@ public class SearchBase {
 
 		p = new CarryBoolean();
 		*/
-		
-		//depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal,size));
-		dFID(p , depth_limit, new EightPuzzle(start, goal,size));
-
-		System.out.println("The goal was found: "+p.getValue());
-		//System.out.println("Suggested next depth is "+NEXT_DEPTH);
-
 
 	}
 
