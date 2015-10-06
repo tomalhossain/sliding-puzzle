@@ -1,7 +1,7 @@
 import java.util.Vector;
 
 
-public class VectorasList implements SearchList {
+public class VectorAsList implements SearchList {
 
 	Vector<State> theList;
 
@@ -13,11 +13,11 @@ public class VectorasList implements SearchList {
 		theList.add(o);
 	}
 
-	public VectorasList() {
+	public VectorAsList() {
 		theList = new Vector<State>();
 	}
 
-	public int size() {
+	public int size() {	
 		return theList.size();
-	}
+	}	
 }
