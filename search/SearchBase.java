@@ -44,25 +44,27 @@ public class SearchBase {
 
 		System.out.println("Starting search with limit "+ limit);
 
-		public int heuristic = 0;
-		public int slashes = 0;
-		public String start = ssp.getStart();
-		public String goal = ssp.getGoal();
-		for (char c : start) {
-			if (c = "/") {
+		int heuristic = 0;
+		int slashes = 0;
+		String start = ssp.getStart();
+		String goal = ssp.getGoal();
+		Character slash = new Character('/');
+		for (int i = 0; i < start.length(); i++) {
+			char c = start.charAt(i);
+			if (c == slash) {
 				slashes++;
 			}
 		}
-		public char[][] manhattanFinderStart = new char[slashes+1][slashes+1];
-		public char[][] manhattanFinderGoal = new char[slashes+1][slashes+1];
+		char[][] manhattanFinderStart = new char[slashes+1][slashes+1];
+		char[][] manhattanFinderGoal = new char[slashes+1][slashes+1];
 
 		// The following two lines take the start and goal states and put them into the 2D arrays created above
-		manhattanFinderStart = cleanArray(start, manhattanFinderStart);
-		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal);
+		manhattanFinderStart = cleanArray(start, manhattanFinderStart, slashes);
+		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal, slashes);
 
 		// The heuristic will be the sum of the manhattan distances of each number in the puzzle from its goal state
 		heuristic = calcHeuristic(manhattanFinderStart, manhattanFinderGoal); // calculates the initial heuristic
-
+		System.out.println("Initial heuristic is: "+heuristic);
 		open.add(new State(ssp.getStart(), heuristic));
 
 		int count = 0;
@@ -112,20 +114,18 @@ public class SearchBase {
 		return search(done,limit,ssp,new PQasList());
 	}
 
-	public char[][] cleanArray(String status, char[][] target) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
+	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
 
-		int j = 0; // first index of 2D array
-		int k = 0; // second index of 2D array
 		String cleanStatus = "";
 
 		String[] tempStatus = status.split("/");
-		for (i=0; i<tempStatus.length; i++) {
+		for (int i=0; i<tempStatus.length; i++) {
 			cleanStatus += tempStatus[i];
 		}
 
 		int count = 0;
-		for (j; j < (slashes+1; j++){
-			for (k; k < (slashes+1); k++) {
+		for (int j = 0; j < (slashes+1); j++){
+			for (int k = 0; k < (slashes+1); k++) {
 				target[j][k] = cleanStatus.charAt(count);
 				count++;
 			}
@@ -141,10 +141,15 @@ public class SearchBase {
 		// Then we also check the index of a number in the inner array in each state (equivalent to a horizontal move in the puzzle).
 		// The value of this difference will also be added to the heuristic.
 		//The sum of these two numbers gives us the manhattan distance of a particular number in the puzzle.
-		for (int i = 0; i < start.length-1; i++) { // Iterating through outer arrays of start state
-			for (int j = 0; j < start.length-1; j++) { // Iterating through indicies of each outer array of start state
+		outer: for (int i = 0; i < start.length; i++) { // Iterating through outer arrays of start state
+			for (int j = 0; j < start.length; j++) { // Iterating through indicies of each outer array of start state
+				if (start[i][j] == new Character('x')) {  // making sure we don't treat the x's as numbers
+					j++;
+				}
+				if (j == start.length) {
+					break outer;
+				}
 				boolean found = false;  // will break us out of while loop once we have calculated the heuristic of a number in the puzzle
-				//int nextArr = 0; // will allow us to iterate through the 2D goal array without using another set of nested for loops
 				int k = 0; // first index of goal 2D array
 				int l = 0; // second index of goal 2D array
 				while (found == false) {
@@ -152,13 +157,14 @@ public class SearchBase {
 						heuristic += Math.abs(k-i)+Math.abs(l-j); // adding the manhattan dist. of this number to the heuristic value
 						found = true; // break out of the while loop, then we move on to the next number in the start array
 					}
-					l++;  // increments index of inner goal array
+					if (found != true) l++; // increments index of inner goal array
 					if (l >= 3) { // iterating through goal array without nested for loops
 						l = 0;
 						k++; // increments index of outer goal array (upon reaching the end of the current inner goal array)
 					}
 					if (k >= 3) {
-						throw new Exception("Error determining heuristic: reached end of goal state without finding item from start state");
+						System.err.println("Error determining heuristic: reached end of goal state without finding item from start state");
+			      System.exit(1);
 					}
 				}
 			}
