@@ -11,7 +11,7 @@ public class SearchBase {
 		System.out.println("Search Type: " + search_type);
 
 		int depth_limit = Integer.parseInt(args[1]);
-		System.out.println("Depth Limit: "+depth_limit);
+		System.out.println("Depth Limit: " + depth_limit);
 
 		PRINT_HOW_OFTEN = Integer.parseInt(args[2]);
 		System.out.println("Print output every " + PRINT_HOW_OFTEN + " lines");
@@ -25,6 +25,7 @@ public class SearchBase {
 		String start = "123/456/78x";
 		String goal = "123/456/x78";
 		int size = 3;
+		
 		CarryBoolean p = new CarryBoolean();
 
 		switch(search_type){
@@ -33,9 +34,9 @@ public class SearchBase {
 			case "DFS": depthFirstSearch(p, depth_limit, new EightPuzzle(start, goal, size));
 						break;
 			case "DFID": dFID(p, depth_limit, new EightPuzzle(start, goal, size));
-						break;
+						 break;
 			case "A": aStarSearch(p, new EightPuzzle(start, goal, size));
-						break;
+					  break;
 			case "IDA": break;
 			default: break;
 		}
@@ -45,8 +46,8 @@ public class SearchBase {
 	}
 
 	public int search(CarryBoolean done, int limit, StateSpace ssp, SearchList open) {
-
-		System.out.println("Starting search with limit "+ limit);
+		
+		System.out.println("\n" + "Starting Search with limit " + limit + "\n");
 
 		int heuristic = 0;
 		int size = ((EightPuzzle)ssp).getSize();
@@ -71,28 +72,30 @@ public class SearchBase {
 		while (!done.getValue()) {
 
 			if (open.size()==0) {
-				System.out.println("open list empty at "+count);
+				System.out.println("Open list empty at " + count);
 				break;
 			}
 
 			State current =  open.remove();
+			
 			count++;
 			if (count % PRINT_HOW_OFTEN == 0) {
-				System.out.println("Search limit "+limit+" at Node # "+
-						count+" Open list length:"+open.size()+" Current Node "+
-						current.getRep()+"  Depth: "+current.getDepth()+"  Heuristic: "+current.getHeuristic());
+				System.out.println("Search limit " + limit + " at Node #" + 
+						count + " Open list length: " + open.size() + " Current Node: " +
+						current.getRep() + "  Depth: " + current.getDepth() + " Heuristic: "
+						+ current.getHeuristic());
 			}
+			
 			if (ssp.isGoal(current.getRep())) {
 				done.set(true);
-				System.out.println(count+"> found goal at "+current.getRep()+" at depth"+current.getDepth());
+				System.out.println("Count is: " + count + " Found goal at " 
+						+ current.getRep() + " at depth " + current.getDepth());
 				current.printPath();
 				break;
 			}
 
 			if (current.getDepth() < limit) {
 				Vector<String> kids = ssp.getKids(current.getRep());
-
-
 				for (String v : kids) {
 					if (!current.getPath().contains(v)) { // Calculate heuristic change for each kid here before adding to the open list
 						char[][] current2D = new char[size][size]; // current state will be stored in this 2D array
