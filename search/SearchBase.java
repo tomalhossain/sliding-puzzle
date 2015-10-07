@@ -49,22 +49,17 @@ public class SearchBase {
 		System.out.println("Starting search with limit "+ limit);
 
 		int heuristic = 0;
-		int slashes = 0;
+		int size = ((EightPuzzle)ssp).getSize();
+		
 		String start = ssp.getStart();
 		String goal = ssp.getGoal();
-		Character slash = new Character('/');
-		for (int i = 0; i < start.length(); i++) {
-			char c = start.charAt(i);
-			if (c == slash) {
-				slashes++;
-			}
-		}
-		char[][] manhattanFinderStart = new char[slashes+1][slashes+1];
-		char[][] manhattanFinderGoal = new char[slashes+1][slashes+1];
+
+		char[][] manhattanFinderStart = new char[size][size];
+		char[][] manhattanFinderGoal = new char[size][size];
 
 		// The following two lines take the start and goal states and put them into the 2D arrays created above
-		manhattanFinderStart = cleanArray(start, manhattanFinderStart, slashes);
-		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal, slashes);
+		manhattanFinderStart = cleanArray(start, manhattanFinderStart, size);
+		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal, size);
 
 		// The heuristic will be the sum of the manhattan distances of each number in the puzzle from its goal state
 		heuristic = calcHeuristic(manhattanFinderStart, manhattanFinderGoal); // calculates the initial heuristic
@@ -100,10 +95,10 @@ public class SearchBase {
 
 				for (String v : kids) {
 					if (!current.getPath().contains(v)) { // Calculate heuristic change for each kid here before adding to the open list
-						char[][] current2D = new char[slashes+1][slashes+1]; // current state will be stored in this 2D array
-						char[][] kid2D = new char[slashes+1][slashes+1]; // new kid state will be stored in this 2D array
-						current2D = cleanArray(current.getRep(), current2D, slashes);
-						kid2D = cleanArray(v, kid2D, slashes);
+						char[][] current2D = new char[size][size]; // current state will be stored in this 2D array
+						char[][] kid2D = new char[size][size]; // new kid state will be stored in this 2D array
+						current2D = cleanArray(current.getRep(), current2D, size);
+						kid2D = cleanArray(v, kid2D, size);
 						int newHeuristic = updateHeuristic(current2D, kid2D, manhattanFinderGoal, current.getHeuristic());
 						open.add(new State(current, v, newHeuristic));
 					}
@@ -137,7 +132,7 @@ public class SearchBase {
 		return search(done, Integer.MAX_VALUE,ssp,new PQasList());
 	}
 
-	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
+	public char[][] cleanArray(String status, char[][] target, int size) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
 
 		String cleanStatus = "";
 
@@ -147,8 +142,8 @@ public class SearchBase {
 		}
 
 		int count = 0;
-		for (int j = 0; j < (slashes+1); j++){
-			for (int k = 0; k < (slashes+1); k++) {
+		for (int j = 0; j < (size); j++){
+			for (int k = 0; k < (size); k++) {
 				target[j][k] = cleanStatus.charAt(count);
 				count++;
 			}
