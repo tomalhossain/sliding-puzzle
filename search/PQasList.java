@@ -17,7 +17,6 @@ public class PQasList implements SearchList {
 	}
 
 	public int size() {
-
 		return theQ.size();
 	}
 

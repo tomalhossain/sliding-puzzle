@@ -16,11 +16,12 @@ public class State implements Comparable<State> {
 		heuristic = h;
 
 	}
-	public State(State s, String n) {
+	public State(State s, String n, int h) {
 		rep = n;
 		path = new Vector<String>(s.path);
 		path.add(n);
 		depth = s.depth+1;
+		heuristic = h;
 	}
 	public int printPath() {
 		int count = 1;
@@ -70,5 +71,8 @@ public class State implements Comparable<State> {
 	}
 	public void setRep(String rep) {
 		this.rep = rep;
+	}
+	public int getHeuristic() {
+		return heuristic;
 	}
 }

@@ -33,8 +33,9 @@ public class SearchBase {
 			case "DFS": depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
 						break;
 			case "DFID": dFID(p , depth_limit, new EightPuzzle(start, goal, size));
-						 break;
-			case "A": break;
+						break;
+			case "A": aStarSearch(p, depth_limit, new EightPuzzle(start, goal, size));
+						break;
 			case "IDA": break;
 			default: break;
 		}
@@ -84,7 +85,7 @@ public class SearchBase {
 			if (count % PRINT_HOW_OFTEN == 0) {
 				System.out.println("Search limit "+limit+" at Node # "+
 						count+" Open list length:"+open.size()+" Current Node "+
-						current.getRep()+"  Depth: "+current.getDepth());
+						current.getRep()+"  Depth: "+current.getDepth()+"  Heuristic: "+current.getHeuristic());
 			}
 			if (ssp.isGoal(current.getRep())) {
 				done.set(true);
@@ -96,9 +97,16 @@ public class SearchBase {
 			if (current.getDepth() < limit) {
 				Vector<String> kids = ssp.getKids(current.getRep());
 
+
 				for (String v : kids) {
-					if (!current.getPath().contains(v))
-						open.add(new State(current,v));
+					if (!current.getPath().contains(v)) { // Calculate heuristic change for each kid here before adding to the open list
+						char[][] current2D = new char[slashes+1][slashes+1]; // current state will be stored in this 2D array
+						char[][] kid2D = new char[slashes+1][slashes+1]; // new kid state will be stored in this 2D array
+						current2D = cleanArray(current.getRep(), current2D, slashes);
+						kid2D = cleanArray(v, kid2D, slashes);
+						int newHeuristic = updateHeuristic(current2D, kid2D, manhattanFinderGoal, current.getHeuristic());
+						open.add(new State(current, v, newHeuristic));
+					}
 				}
 			}
 		}
@@ -124,6 +132,10 @@ public class SearchBase {
 		}
 	}
 
+	public int aStarSearch(CarryBoolean done, int limit, StateSpace ssp) {
+		return search(done,limit,ssp,new PQasList());
+	}
+
 	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
 
 		String cleanStatus = "";
@@ -140,14 +152,10 @@ public class SearchBase {
 				count++;
 			}
 		}
-		
+
 		return target;
 	}
 
-
-	public int bestFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
-		return search(done,limit,ssp,new PQasList());
-	}
 
 	public int calcHeuristic(char[][] start, char[][] goal) {
 		int heuristic = 0;
@@ -184,6 +192,86 @@ public class SearchBase {
 				}
 			}
 		}
+		return heuristic;
+	}
+
+
+	public int calcManhattan(int x, int y, char moved, char[][] goal) { // calculates the Manhattan distance of a given char, given its current coordinates
+		// We start by finding the goal coordinates of the moved character
+		int movedXgoal = 0;
+		int movedYgoal = 0;
+		boolean breaking = false;
+		for (int i = 0; i < goal.length; i++) {
+			for (int j = 0; j < goal.length; j++) {
+				if (goal[i][j] == moved) {
+					movedXgoal = i;
+					movedYgoal = j;
+					breaking = true;
+				}
+				if (breaking == true) break;
+			}
+			if (breaking == true) break;
+		}
+
+		// We have the goal coordinates now.  Now we just calculate the manhattan distance and return it
+		int manhattan = Math.abs(movedXgoal-x)+Math.abs(movedYgoal-y);
+		return manhattan;
+	}
+
+
+	// We will update the heuristic by finding the indicies of x in the current state, then checking what number is in those incidies in the kid state.
+	// We then find the indicies of that number in the current state.  Now we have the indicies of the number that is moved, both before and after the move.
+	// We calculate the manhattan distance of the number from the goal in each state.  If it is greater in the kid state, heuristic++.  Else, heuristic--.
+	public int updateHeuristic(char[][] current, char[][] kid, char[][] goal, int heuristic) {
+		int xXcurrent = 0; // will hold x coordinate of x in current state
+		int xYcurrent = 0; // will hold y coordinate of x in current state
+		boolean breaking = false;
+		for (int i = 0; i < current.length; i++) { // Iterating through outer arrays of current state
+			for (int j = 0; j < current.length; j++) { // Iterating through indicies of each outer array of current state
+				if (current[i][j] == new Character('x')) {  // looking for x
+					xXcurrent = i;
+					xYcurrent = j;
+					breaking = true;
+				}
+				if (breaking == true) break;
+			}
+			if (breaking == true) break;
+		}
+
+		// We have the indicies of x in the current state now.  Next, we find what number is in that spot in the kid state:
+		char moved = kid[xXcurrent][xYcurrent];
+		System.out.println("moved should be "+kid[xXcurrent][xYcurrent]+" and actually is "+moved);
+
+		// Now we want to find this number's indicies in the current state
+		int movedXcurrent = 0;
+		int movedYcurrent = 0;
+		breaking = false;
+		System.out.println("moved is "+moved);
+		for (int i = 0; i < current.length; i++) { // Iterating through outer arrays of current state
+			for (int j = 0; j < current.length; j++) { // Iterating through indicies of each outer array of current state
+				if (current[i][j] == moved) {  // looking for x
+					movedXcurrent = i;
+					movedYcurrent = j;
+					breaking = true;
+				}
+				if (breaking == true) break;
+			}
+			if (breaking == true) break;
+		}
+		System.out.println("movedXcurrent is "+movedXcurrent+" and movedYcurrent is "+movedYcurrent+" and xXcurrent is "+xXcurrent+" and xYcurrent is "+xYcurrent);
+		// Now that we have the indicies of the moved number before and after the move, we want to compare the manhattan distance of the number
+		// 	from its spot in the goal state for both the current and kid states.
+		int movedManhattanCurrent = calcManhattan(movedXcurrent, movedYcurrent, moved, goal);
+		int movedManhattanKid = calcManhattan(xXcurrent, xYcurrent, moved, goal);
+		System.out.println("Manhattan Current is "+movedManhattanCurrent+" and Manhattan Kid is "+movedManhattanKid);
+		if (movedManhattanKid > movedManhattanCurrent) {
+			heuristic++;
+			System.out.println("Heuristic increases");
+		} else {
+			heuristic--;
+			System.out.println("Heuristic decreases");
+		}
+
 		return heuristic;
 	}
 
