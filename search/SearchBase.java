@@ -28,13 +28,13 @@ public class SearchBase {
 		CarryBoolean p = new CarryBoolean();
 
 		switch(search_type){
-			case "BFS": breadthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
+			case "BFS": breadthFirstSearch(p, new EightPuzzle(start, goal, size));
 						break;
-			case "DFS": depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
+			case "DFS": depthFirstSearch(p, depth_limit, new EightPuzzle(start, goal, size));
 						break;
-			case "DFID": dFID(p , depth_limit, new EightPuzzle(start, goal, size));
+			case "DFID": dFID(p, depth_limit, new EightPuzzle(start, goal, size));
 						break;
-			case "A": aStarSearch(p, depth_limit, new EightPuzzle(start, goal, size));
+			case "A": aStarSearch(p, new EightPuzzle(start, goal, size));
 						break;
 			case "IDA": break;
 			default: break;
@@ -113,7 +113,7 @@ public class SearchBase {
 		return limit+1;
 	}
 
-	public int breadthFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
+	public int breadthFirstSearch(CarryBoolean done, StateSpace ssp) {
 
 		return search(done, Integer.MAX_VALUE, ssp, new Queue());
 	}
@@ -132,8 +132,9 @@ public class SearchBase {
 		}
 	}
 
-	public int aStarSearch(CarryBoolean done, int limit, StateSpace ssp) {
-		return search(done,limit,ssp,new PQasList());
+	public int aStarSearch(CarryBoolean done, StateSpace ssp) {
+		
+		return search(done, Integer.MAX_VALUE,ssp,new PQasList());
 	}
 
 	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
@@ -155,7 +156,6 @@ public class SearchBase {
 
 		return target;
 	}
-
 
 	public int calcHeuristic(char[][] start, char[][] goal) {
 		int heuristic = 0;

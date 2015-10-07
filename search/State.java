@@ -14,8 +14,8 @@ public class State implements Comparable<State> {
 		path.add(r);
 		depth = 0;
 		heuristic = h;
-
 	}
+	
 	public State(State s, String n, int h) {
 		rep = n;
 		path = new Vector<String>(s.path);
@@ -23,6 +23,7 @@ public class State implements Comparable<State> {
 		depth = s.depth+1;
 		heuristic = h;
 	}
+	
 	public int printPath() {
 		int count = 1;
 		for (String step : path)
@@ -42,7 +43,8 @@ public class State implements Comparable<State> {
 		// deeper is larger
 		//else return ((State)other).getDepth() -depth;
 		//deeper is smaller
-		else return depth - ((State)other).getDepth();
+		//else return depth - ((State)other).getDepth();
+		else return getF() - ((State)other).getF();
 
 	}
 
@@ -74,5 +76,8 @@ public class State implements Comparable<State> {
 	}
 	public int getHeuristic() {
 		return heuristic;
+	}
+	public int getF() {
+		return heuristic + depth;
 	}
 }
