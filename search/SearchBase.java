@@ -33,8 +33,9 @@ public class SearchBase {
 			case "DFS": depthFirstSearch(p , depth_limit, new EightPuzzle(start, goal, size));
 						break;
 			case "DFID": dFID(p , depth_limit, new EightPuzzle(start, goal, size));
-						 break;
-			case "A": break;
+						break;
+			case "A": aStarSearch(p, depth_limit, new EightPuzzle(start, goal, size));
+						break;
 			case "IDA": break;
 			default: break;
 		}
@@ -131,6 +132,10 @@ public class SearchBase {
 		}
 	}
 
+	public int aStarSearch(CarryBoolean done, int limit, StateSpace ssp) {
+		return search(done,limit,ssp,new PQasList());
+	}
+
 	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
 
 		String cleanStatus = "";
@@ -151,10 +156,6 @@ public class SearchBase {
 		return target;
 	}
 
-
-	public int bestFirstSearch(CarryBoolean done, int limit, StateSpace ssp) {
-		return search(done,limit,ssp,new PQasList());
-	}
 
 	public int calcHeuristic(char[][] start, char[][] goal) {
 		int heuristic = 0;
