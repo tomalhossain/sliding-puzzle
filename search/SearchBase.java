@@ -1,5 +1,5 @@
 import java.util.Vector;
- 
+
 public class SearchBase {
 
 	private static int PRINT_HOW_OFTEN = 1;
