@@ -351,13 +351,13 @@ public class SearchBase {
 
 		// We have the indicies of x in the current state now.  Next, we find what number is in that spot in the kid state:
 		char moved = kid[xXcurrent][xYcurrent];
-		//System.out.println("moved should be "+kid[xXcurrent][xYcurrent]+" and actually is "+moved);
+		System.out.println("moved should be "+kid[xXcurrent][xYcurrent]+" and actually is "+moved);
 
 		// Now we want to find this number's indicies in the current state
 		int movedXcurrent = 0;
 		int movedYcurrent = 0;
 		breaking = false;
-		//System.out.println("moved is "+moved);
+		System.out.println("moved is "+moved);
 		for (int i = 0; i < current.length; i++) { // Iterating through outer arrays of current state
 			for (int j = 0; j < current.length; j++) { // Iterating through indicies of each outer array of current state
 				if (current[i][j] == moved) {  // looking for x
@@ -369,18 +369,18 @@ public class SearchBase {
 			}
 			if (breaking == true) break;
 		}
-		//System.out.println("movedXcurrent is "+movedXcurrent+" and movedYcurrent is "+movedYcurrent+" and xXcurrent is "+xXcurrent+" and xYcurrent is "+xYcurrent);
+		System.out.println("movedXcurrent is "+movedXcurrent+" and movedYcurrent is "+movedYcurrent+" and xXcurrent is "+xXcurrent+" and xYcurrent is "+xYcurrent);
 		// Now that we have the indicies of the moved number before and after the move, we want to compare the manhattan distance of the number
 		// 	from its spot in the goal state for both the current and kid states.
 		int movedManhattanCurrent = calcManhattan(movedXcurrent, movedYcurrent, moved, goal);
 		int movedManhattanKid = calcManhattan(xXcurrent, xYcurrent, moved, goal);
-		//System.out.println("Manhattan Current is "+movedManhattanCurrent+" and Manhattan Kid is "+movedManhattanKid);
+		System.out.println("Manhattan Current is "+movedManhattanCurrent+" and Manhattan Kid is "+movedManhattanKid);
 		if (movedManhattanKid > movedManhattanCurrent) {
 			heuristic++;
-			//System.out.println("Heuristic increases");
+			System.out.println("Heuristic increases");
 		} else {
 			heuristic--;
-			//System.out.println("Heuristic decreases");
+			System.out.println("Heuristic decreases");
 		}
 
 		return heuristic;
