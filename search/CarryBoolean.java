@@ -1,3 +1,4 @@
+
 public class CarryBoolean {
 
 	private boolean value = false;

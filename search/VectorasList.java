@@ -1,5 +1,6 @@
 import java.util.Vector;
 
+
 public class VectorasList implements SearchList {
 
 	Vector<State> theList;
