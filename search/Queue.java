@@ -1,6 +1,5 @@
 import java.util.Vector;
 
-
 public class Queue implements SearchList {
 
 	Vector<State> theList;
