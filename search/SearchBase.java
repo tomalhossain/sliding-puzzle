@@ -23,19 +23,16 @@ public class SearchBase {
 
 	private void process(String search_type, int depth_limit) {
 
-		String start = "123/456/78x";
-		String goal = "x87/654/321";
+		String start = "1234/CDE5/BxF6/A987";
+		String goal = "2D34/18E5/xC96/BAF7";
 		
 		//String goal = "123/456/x78";
-		int size = 3;
-<<<<<<< HEAD
-		int IDAStar_f_bound = 0;
-=======
-		
->>>>>>> origin/master
-		CarryBoolean p = new CarryBoolean();
-		 
+		int size = 4;
 
+		int IDAStar_f_bound = 0;
+
+		CarryBoolean p = new CarryBoolean();
+		
 		switch(search_type) {
 			case "BFS": breadthFirstSearch(p, new EightPuzzle(start, goal, size));
 						break;
@@ -44,14 +41,11 @@ public class SearchBase {
 			case "DFID": dFID(p, depth_limit, new EightPuzzle(start, goal, size));
 						 break;
 			case "A": aStarSearch(p, new EightPuzzle(start, goal, size));
-<<<<<<< HEAD
 						break;
 			case "IDA": IDAStarSearch(p, IDAStar_f_bound, new EightPuzzle (start, goal, size), new VectorPQ());
 						break;
-=======
 					  break;
 			case "IDA": break;
->>>>>>> origin/master
 			default: break;
 		}
 		
@@ -64,17 +58,23 @@ public class SearchBase {
 		System.out.println("\n" + "Starting Search with limit " + limit + "\n");
 
 		int heuristic = 0;
-		int size = ((EightPuzzle)ssp).getSize();
-		
+		int slashes = 0;
 		String start = ssp.getStart();
 		String goal = ssp.getGoal();
+		Character slash = new Character('/');
+		for (int i = 0; i < start.length(); i++) {
+			char c = start.charAt(i);
+			if (c == slash) {
+				slashes++;
+			}
+		}
 
-		char[][] manhattanFinderStart = new char[size][size];
-		char[][] manhattanFinderGoal = new char[size][size];
+		char[][] manhattanFinderStart = new char[slashes+1][slashes+1];
+		char[][] manhattanFinderGoal = new char[slashes+1][slashes+1];
 
 		// The following two lines take the start and goal states and put them into the 2D arrays created above
-		manhattanFinderStart = cleanArray(start, manhattanFinderStart, size);
-		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal, size);
+		manhattanFinderStart = cleanArray(start, manhattanFinderStart, slashes);
+		manhattanFinderGoal = cleanArray(goal, manhattanFinderGoal, slashes);
 
 		// The heuristic will be the sum of the manhattan distances of each number in the puzzle from its goal state
 		heuristic = calcHeuristic(manhattanFinderStart, manhattanFinderGoal); // calculates the initial heuristic
@@ -149,7 +149,6 @@ public class SearchBase {
 		return search(done, Integer.MAX_VALUE,ssp,new PQasList());
 	}
 
-<<<<<<< HEAD
 	public void IDAStarSearch (CarryBoolean done, int f_bound, StateSpace ssp, VectorPQ open) { 
 		
 		System.out.println("Starting IDA* search with f-bound: " + f_bound);
@@ -246,9 +245,8 @@ public class SearchBase {
 	}
 
 	public char[][] cleanArray(String status, char[][] target, int slashes) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
-=======
+
 	public char[][] cleanArray(String status, char[][] target, int size) { // converts start and goal state strings into 2D arrays that will be used to calculate the heuristic
->>>>>>> origin/master
 
 		String cleanStatus = "";
 
@@ -306,7 +304,6 @@ public class SearchBase {
 		return heuristic;
 	}
 
-
 	public int calcManhattan(int x, int y, char moved, char[][] goal) { // calculates the Manhattan distance of a given char, given its current coordinates
 		// We start by finding the goal coordinates of the moved character
 		int movedXgoal = 0;
@@ -328,7 +325,6 @@ public class SearchBase {
 		int manhattan = Math.abs(movedXgoal-x)+Math.abs(movedYgoal-y);
 		return manhattan;
 	}
-
 
 	// We will update the heuristic by finding the indicies of x in the current state, then checking what number is in those incidies in the kid state.
 	// We then find the indicies of that number in the current state.  Now we have the indicies of the number that is moved, both before and after the move.
@@ -382,9 +378,6 @@ public class SearchBase {
 			heuristic--;
 			System.out.println("Heuristic decreases");
 		}
-
 		return heuristic;
 	}
-
-
 }
