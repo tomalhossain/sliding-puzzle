@@ -1,6 +1,5 @@
 import java.util.Vector;
 
-
 public class State implements Comparable<State> {
 
 	private String rep;

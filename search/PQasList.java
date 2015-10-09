@@ -8,6 +8,11 @@ public class PQasList implements SearchList {
 		return theQ.poll();
 	}
 
+	public State peek() {
+		return theQ.peek();
+	}
+
+
 	public void add(State o) {
 		theQ.add(o);
 	}
@@ -19,7 +24,8 @@ public class PQasList implements SearchList {
 	public int size() {
 		return theQ.size();
 	}
-
-
+	public boolean isEmpty () {
+		return theQ.isEmpty();
+	}
 
 }

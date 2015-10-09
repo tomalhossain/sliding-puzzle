@@ -1,7 +1,5 @@
 import java.util.Vector;
 
-
-
 public class EightPuzzle implements StateSpace {
 
 	int size = 3;
@@ -38,10 +36,7 @@ public class EightPuzzle implements StateSpace {
 				kids.add(new String(chars));
 			}
 		}
-
-
 	}
-
 
 	public String getGoal() {
 		return goal;

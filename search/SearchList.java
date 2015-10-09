@@ -1,4 +1,3 @@
-
 public interface SearchList {
 
 	void add(State state);
