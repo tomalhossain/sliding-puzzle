@@ -49,4 +49,8 @@ public class EightPuzzle implements StateSpace {
 	public boolean isGoal(String rep) {
 		return rep.equals(getGoal());
 	}
+	
+	public int getSize() {
+		return size;
+	}
 }
