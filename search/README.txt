@@ -11,4 +11,4 @@ This program implements a heuristic that is the sum of the Manhattan distances o
 
 *Notes*
 
-- The class EightPuzzle was not renamed, but it currently is working for a 15-puzzle input size. In order for it to work for the 
+- The class EightPuzzle was not renamed, but it currently is working for a 15-puzzle input size. In order for it to work for the 8-puzzle, the input size within the class 8-puzzle and the variable "size" inside of the method "process" within the class "SearchBase" would need to be 3 instead of 4.  
