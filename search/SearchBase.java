@@ -22,8 +22,8 @@ public class SearchBase {
 
 	private void process(String search_type, int depth_limit) {
 
-		String start = "1234/CDE5/BxF6/A987";
-		String goal = "2D34/18E5/xC96/BAF7";
+		String start = "2D34/18E5/xC96/BAF7";
+		String goal = "1234/CDE5/BxF6/A987";
 		int size = 4;
 
 		int IDAStar_f_bound = 0; 
@@ -48,8 +48,6 @@ public class SearchBase {
 	}
 
 	public int search(CarryBoolean done, int limit, StateSpace ssp, SearchList open) {
-
-		System.out.println("\n" + "Starting Search with limit " + limit + "\n");
 
 		int heuristic = 0;
 		int size = ((EightPuzzle)ssp).getSize();
@@ -127,6 +125,7 @@ public class SearchBase {
 
 		for(int i = 0; i <= limit; i++){
 			if(!done.getValue()){
+				System.out.println("\n" + "Starting Search with limit " + i + "\n");
 				depthFirstSearch(done, i, ssp);
 			}
 		}
@@ -254,7 +253,7 @@ public class SearchBase {
 		// The value of this difference will also be added to the heuristic.
 		//The sum of these two numbers gives us the manhattan distance of a particular number in the puzzle.
 		outer: for (int i = 0; i < start.length; i++) { // Iterating through outer arrays of start state
-			for (int j = 0; j < start.length; j++) { // Iterating through indicies of each outer array of start state
+			for (int j = 0; j < start.length; j++) { // Iterating through indices of each outer array of start state
 				if (start[i][j] == new Character('x')) {  // making sure we don't treat the x's as numbers
 					j++;
 				}
@@ -308,15 +307,15 @@ public class SearchBase {
 	}
 
 
-	// We will update the heuristic by finding the indicies of x in the current state, then checking what number is in those incidies in the kid state.
-	// We then find the indicies of that number in the current state.  Now we have the indicies of the number that is moved, both before and after the move.
+	// We will update the heuristic by finding the indices of x in the current state, then checking what number is in those incidies in the kid state.
+	// We then find the indices of that number in the current state.  Now we have the indices of the number that is moved, both before and after the move.
 	// We calculate the manhattan distance of the number from the goal in each state.  If it is greater in the kid state, heuristic++.  Else, heuristic--.
 	public int updateHeuristic(char[][] current, char[][] kid, char[][] goal, int heuristic) {
 		int xXcurrent = 0; // will hold x coordinate of x in current state
 		int xYcurrent = 0; // will hold y coordinate of x in current state
 		boolean breaking = false;
 		for (int i = 0; i < current.length; i++) { // Iterating through outer arrays of current state
-			for (int j = 0; j < current.length; j++) { // Iterating through indicies of each outer array of current state
+			for (int j = 0; j < current.length; j++) { // Iterating through indices of each outer array of current state
 				if (current[i][j] == new Character('x')) {  // looking for x
 					xXcurrent = i;
 					xYcurrent = j;
@@ -327,17 +326,15 @@ public class SearchBase {
 			if (breaking == true) break;
 		}
 
-		// We have the indicies of x in the current state now.  Next, we find what number is in that spot in the kid state:
+		// We have the indices of x in the current state now.  Next, we find what number is in that spot in the kid state:
 		char moved = kid[xXcurrent][xYcurrent];
-		System.out.println("moved should be "+kid[xXcurrent][xYcurrent]+" and actually is "+moved);
 
-		// Now we want to find this number's indicies in the current state
+		// Now we want to find this number's indices in the current state
 		int movedXcurrent = 0;
 		int movedYcurrent = 0;
 		breaking = false;
-		System.out.println("moved is "+moved);
 		for (int i = 0; i < current.length; i++) { // Iterating through outer arrays of current state
-			for (int j = 0; j < current.length; j++) { // Iterating through indicies of each outer array of current state
+			for (int j = 0; j < current.length; j++) { // Iterating through indices of each outer array of current state
 				if (current[i][j] == moved) {  // looking for x
 					movedXcurrent = i;
 					movedYcurrent = j;
@@ -347,18 +344,14 @@ public class SearchBase {
 			}
 			if (breaking == true) break;
 		}
-		System.out.println("movedXcurrent is "+movedXcurrent+" and movedYcurrent is "+movedYcurrent+" and xXcurrent is "+xXcurrent+" and xYcurrent is "+xYcurrent);
-		// Now that we have the indicies of the moved number before and after the move, we want to compare the manhattan distance of the number
+		// Now that we have the indices of the moved number before and after the move, we want to compare the manhattan distance of the number
 		// 	from its spot in the goal state for both the current and kid states.
 		int movedManhattanCurrent = calcManhattan(movedXcurrent, movedYcurrent, moved, goal);
 		int movedManhattanKid = calcManhattan(xXcurrent, xYcurrent, moved, goal);
-		System.out.println("Manhattan Current is "+movedManhattanCurrent+" and Manhattan Kid is "+movedManhattanKid);
 		if (movedManhattanKid > movedManhattanCurrent) {
 			heuristic++;
-			System.out.println("Heuristic increases");
 		} else {
 			heuristic--;
-			System.out.println("Heuristic decreases");
 		}
 
 		return heuristic;
