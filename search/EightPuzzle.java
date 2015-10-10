@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class EightPuzzle implements StateSpace {
 
-	int size = 3;
+	int size = 4;
 	String start;
 	String goal;
 
@@ -41,7 +41,6 @@ public class EightPuzzle implements StateSpace {
 
 
 	}
-
 
 	public String getGoal() {
 		return goal;

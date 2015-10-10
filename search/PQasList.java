@@ -20,6 +20,11 @@ public class PQasList implements SearchList {
 		return theQ.size();
 	}
 
+	public boolean isEmpty () {
+		return theQ.isEmpty();
+	}
 
-
+	public State peek() {
+		return theQ.peek();
+	}
 }
