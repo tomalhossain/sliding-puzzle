@@ -18,6 +18,7 @@ The heuristic that is used is the sum of the Manhattan distances of each piece o
 To use this program, you must specify the search algorithm you would like to use, the depth limit (which will be ignored if you are not using either the depth first search algorithm or the depth first iterative deepening algorithm), and the number of steps you would like the program to take before printing an update.  
 
 **How To Specify The Algorithm You Would Like To Use**:
+
 | Algorithm | String to use in terminal command |
 | --------- | --------------------------------- |
 | Breadth First Search | BFS |
