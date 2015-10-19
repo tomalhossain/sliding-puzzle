@@ -4,6 +4,7 @@ public class SearchBase {
 
 	private static int PRINT_HOW_OFTEN = 1;
 	public static boolean debug = false;
+	public int heuristicFinal;
 
 	public static void main(String[] args)  {
 
@@ -26,7 +27,7 @@ public class SearchBase {
 		String goal = "1234/CDE5/BxF6/A987";
 		int size = 4;
 
-		int IDAStar_f_bound = 0; 
+		int IDAStar_f_bound = 0;
 
 		CarryBoolean p = new CarryBoolean();
 
@@ -44,6 +45,16 @@ public class SearchBase {
 		}
 
 		System.out.println("The goal was found: "+p.getValue());
+		switch(search_type){
+			case "BFS": break;
+			case "DFS": break;
+			case "DFID": break;
+			case "A": System.out.println("The final heuristic value is: "+heuristicFinal);
+				break;
+			case "IDA": System.out.println("The final heuristic value is: "+heuristicFinal);
+			  break;
+			default: break;
+		}
 
 	}
 
@@ -91,6 +102,7 @@ public class SearchBase {
 				System.out.println("Count is: " + count + " Found goal at "
 						+ current.getRep() + " at depth " + current.getDepth());
 				current.printPath();
+				heuristicFinal = current.getHeuristic();
 				break;
 			}
 
@@ -136,8 +148,8 @@ public class SearchBase {
 		return search(done, Integer.MAX_VALUE,ssp,new PQasList());
 	}
 
-	public void IDAStarSearch (CarryBoolean done, int f_bound, StateSpace ssp, VectorPQ open) { 
-		
+	public void IDAStarSearch (CarryBoolean done, int f_bound, StateSpace ssp, VectorPQ open) {
+
 		System.out.println("Starting IDA* search with f-bound: " + f_bound);
 
 		int heuristic = 0;
@@ -156,32 +168,32 @@ public class SearchBase {
 		// The heuristic will be the sum of the manhattan distances of each number in the puzzle from its goal state
 		heuristic = calcHeuristic(manhattanFinderStart, manhattanFinderGoal); // calculates the initial heuristic
 		System.out.println("Initial heuristic is: "+heuristic);
-		
+
 		State initialState = new State(ssp.getStart(), heuristic);
-		PQasList initialPQ = new PQasList();   
-		// Rather than adding a children states individually directly into a java vector, all children of a given 
+		PQasList initialPQ = new PQasList();
+		// Rather than adding a children states individually directly into a java vector, all children of a given
 		// state are added to their own unique PQasList, which is in turn added a java vector (in this case, this open
-		// list is the class VectorPQ) 
+		// list is the class VectorPQ)
 		initialPQ.add(initialState);
 		open.add(initialPQ);
-		
+
 		int count = 0;
 		// Rejects serves as a java priority queue of all the nodes that exceed the f-bound of a given iteration of the IDA* search.
-		PQasList rejects = new PQasList(); 
-		
+		PQasList rejects = new PQasList();
+
 		while (!done.getValue()) {
 			if (open.size()==0 ) {
 				if (rejects.size() != 0) {
 					State rejectsMin = rejects.remove();
 					IDAStarSearch (done, rejectsMin.getF(), ssp, open);
-					return; 
+					return;
 				}
 				else {
 					System.out.println("open list empty at "+count);
-					return; 
+					return;
 				}
 			}
-			
+
 			State current = open.remove();
 
 			count++;
@@ -192,23 +204,24 @@ public class SearchBase {
 						" Reject list length: " + rejects.size());
 			}
 			// This prevents states with f-values greater than the current f-bound from being expanded, i.e. their
-			// children will not be added to the open list as a new, distinct PQasList. 
+			// children will not be added to the open list as a new, distinct PQasList.
 			if (current.getF() > f_bound) {
 				rejects.add(current);
 			}
-			
+
 			else {
-				
+
 				if (ssp.isGoal(current.getRep())) {
 					done.set(true);
 					System.out.println(count+"> found goal at "+current.getRep()+" at depth"+current.getDepth());
 					current.printPath();
+					heuristicFinal = current.getHeuristic();
 					return;
 				}
-				// All children of a given state are added to a PQasList. 
+				// All children of a given state are added to a PQasList.
 				Vector<String> kids = ssp.getKids(current.getRep());
-				PQasList kidsPQ = new PQasList(); 
-				
+				PQasList kidsPQ = new PQasList();
+
 				for (String v : kids) {
 					if (!current.getPath().contains(v)) { // Calculate heuristic change for each kid here before adding to the open list
 						char[][] current2D = new char[size][size]; // current state will be stored in this 2D array
