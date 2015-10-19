@@ -213,7 +213,7 @@ public class SearchBase {
 
 				if (ssp.isGoal(current.getRep())) {
 					done.set(true);
-					System.out.println(count+"> found goal at "+current.getRep()+" at depth"+current.getDepth());
+					System.out.println("Count is: "+count+" found goal at "+current.getRep()+" at depth "+current.getDepth());
 					current.printPath();
 					heuristicFinal = current.getHeuristic();
 					return;
