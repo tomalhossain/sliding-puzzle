@@ -260,11 +260,11 @@ public class SearchBase {
 
 	public int calcHeuristic(char[][] start, char[][] goal) {
 		int heuristic = 0;
-		// First we see how many of the outer level arrays we must traverse to get a number from it's start state to goal state.
+		// First we see how many of the outer level arrays we must traverse to get a number from its start state to goal state.
 		// For every one of these outer array traversals (equivalent to a vertical move in the puzzle), we add 1 to the heuristic.
 		// Then we also check the index of a number in the inner array in each state (equivalent to a horizontal move in the puzzle).
 		// The value of this difference will also be added to the heuristic.
-		//The sum of these two numbers gives us the manhattan distance of a particular number in the puzzle.
+		// The sum of these two numbers gives us the manhattan distance of a particular number in the puzzle.
 		outer: for (int i = 0; i < start.length; i++) { // Iterating through outer arrays of start state
 			for (int j = 0; j < start.length; j++) { // Iterating through indices of each outer array of start state
 				if (start[i][j] == new Character('x')) {  // making sure we don't treat the x's as numbers
@@ -345,18 +345,22 @@ public class SearchBase {
 		// Now we want to find this number's indices in the current state
 		int movedXcurrent = 0;
 		int movedYcurrent = 0;
-		breaking = false;
-		for (int i = 0; i < current.length; i++) { // Iterating through outer arrays of current state
-			for (int j = 0; j < current.length; j++) { // Iterating through indices of each outer array of current state
-				if (current[i][j] == moved) {  // looking for x
-					movedXcurrent = i;
-					movedYcurrent = j;
-					breaking = true;
-				}
-				if (breaking == true) break;
-			}
-			if (breaking == true) break;
+
+		// There are only 4 places this number could be
+		if (xXcurrent-1 >= 0 && current[xXcurrent-1][xYcurrent] == moved) {
+			movedXcurrent = xXcurrent-1;
+			movedYcurrent = xYcurrent;
+		} else if (xYcurrent-1 >= 0 && current[xXcurrent][xYcurrent-1] == moved) {
+			movedXcurrent = xXcurrent;
+			movedYcurrent = xYcurrent-1;
+		} else if (xXcurrent+1 < current.length && current[xXcurrent+1][xYcurrent] == moved) {
+			movedXcurrent = xXcurrent+1;
+			movedYcurrent = xYcurrent;
+		} else {
+			movedXcurrent = xXcurrent;
+			movedYcurrent = xYcurrent+1;
 		}
+
 		// Now that we have the indices of the moved number before and after the move, we want to compare the manhattan distance of the number
 		// 	from its spot in the goal state for both the current and kid states.
 		int movedManhattanCurrent = calcManhattan(movedXcurrent, movedYcurrent, moved, goal);
